@@ -24,15 +24,12 @@ import math
 
 import numpy as np
 import pandas as pd
+import os
 
-# If you want to enable embeddings, install openai and set OPENAI_API_KEY in env:
-#   pip install openai
-#   export OPENAI_API_KEY="..."
 try:
     from openai import OpenAI
 except ImportError:
     OpenAI = None  # so script can still run without the library
-
 
 # -----------------------------
 # Configuration
@@ -45,8 +42,7 @@ NIGHTS_WITH_VENUES_PATH = DATA_DIR / "nights_with_venues.csv"
 FEATURES_CONFIG_PATH = DATA_DIR / "features_config.json"
 NIGHTS_FEATURES_PATH = DATA_DIR / "nights_features.jsonl"
 
-# Toggle this to True when you want to actually call OpenAI embeddings.
-USE_OPENAI_EMBEDDINGS = False   # Set to True during hackathon if API key is ready
+USE_OPENAI_EMBEDDINGS = True
 EMBEDDING_MODEL = "text-embedding-3-small"
 
 
@@ -206,7 +202,12 @@ def get_openai_client() -> Any:
         raise RuntimeError(
             "openai library is not installed. Install with 'pip install openai'."
         )
-    client = OpenAI()
+
+    api_key = os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENAI_API_KEY environment variable is not set.")
+
+    client = OpenAI(api_key=api_key)
     return client
 
 
