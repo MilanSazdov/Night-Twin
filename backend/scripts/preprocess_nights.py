@@ -26,6 +26,35 @@ import numpy as np
 import pandas as pd
 import os
 
+
+# Simple .env loader (small, dependency-free). It will load KEY=VALUE lines
+def load_dotenv(path: Path) -> None:
+    """Load simple KEY=VALUE pairs from a .env file into os.environ.
+
+    - Lines starting with # are ignored.
+    - Quotes around values are stripped.
+    """
+    try:
+        text = path.read_text(encoding="utf-8")
+    except Exception:
+        return
+
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if "=" not in line:
+            continue
+        key, val = line.split("=", 1)
+        key = key.strip()
+        val = val.strip()
+        # strip optional surrounding quotes
+        if (val.startswith('"') and val.endswith('"')) or (val.startswith("'") and val.endswith("'")):
+            val = val[1:-1]
+        # don't override already set env vars (explicit wins)
+        if key not in os.environ:
+            os.environ[key] = val
+
 try:
     from openai import OpenAI
 except ImportError:
@@ -37,6 +66,11 @@ except ImportError:
 
 BASE_DIR = Path(__file__).resolve().parents[1]  # backend/
 DATA_DIR = BASE_DIR / "data"
+
+# Load repository .env if present (so scripts can pick up OPENAI_API_KEY, etc.)
+DOTENV_PATH = BASE_DIR / ".env"
+if DOTENV_PATH.exists():
+    load_dotenv(DOTENV_PATH)
 
 NIGHTS_WITH_VENUES_PATH = DATA_DIR / "nights_with_venues.csv"
 FEATURES_CONFIG_PATH = DATA_DIR / "features_config.json"
