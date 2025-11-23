@@ -25,8 +25,6 @@ from collections import Counter
 # Paths
 # -----------------------------
 
-BASE_DIR = Path(__file__).resolve().parents[1]  # backend/
-DATA_DIR = BASE_DIR / "data"
 
 RAW_CSV_PATH = DATA_DIR / "serbia_nightlife_dataset.csv"
 VENUES_CSV_PATH = DATA_DIR / "venues.csv"
