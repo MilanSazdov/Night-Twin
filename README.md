@@ -1,6 +1,6 @@
 # 🌃 NightTwin: AI Doppelgängers for Your Night Out
 
-![NightTwin Banner](./assets/banner.png)
+![NightTwin Banner](/assets/NightTwin%20banner%20.png)
 
 <div align="center">
 
