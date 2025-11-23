@@ -1,0 +1,114 @@
+# -------------------------
+# Global OS / editor junk
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# IDE / editor settings
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# -------------------------
+# Environment / secrets
+# -------------------------
+.env
+.env.*     # npr .env.local, .env.development
+backend/.env
+frontend/.env
+frontend/.env.local
+*.pem
+
+# -------------------------
+# Python / backend
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Local generated data artifacts (datasets, features, embeddings)
+backend/data/
+backend/data/**
+
+# virtual envs
+venv/
+.venv/
+env/
+ENV/
+
+# Python tooling cache
+.pytest_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+
+# SQLite / local DB fajlovi (ako ih koristiš)
+*.db
+*.sqlite3
+
+# -------------------------
+# Node / frontend (React, Vite, etc.)
+# -------------------------
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+
+# Build output
+dist/
+build/
+frontend/dist/
+frontend/build/
+
+# Vite / bundlers cache
+*.tsbuildinfo
+
+# -------------------------
+# Misc artifacts
+# -------------------------
+*.bak
+*.tmp
+*.temp
+
+# -------------------------
+# OS-specific
+# -------------------------
+ehthumbs.db
+Desktop.ini
+
+
+
+#### vezano za frontend projekat ####
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
