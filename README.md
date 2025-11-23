@@ -295,50 +295,120 @@ graph LR
 
 ## 🔥 How It Works (The Flow)
 
-### 1. Offline: Build the Nightlife Graph
+### 1. User Prompt
 
-- Scrape venues + reviews from Google Maps.
-- Clean, filter, and normalize entries.
-- Use OpenAI to:
-  - Summarize reviews.
-  - Extract structured tags (vibe, crowd, use cases, noise, etc.).
-- Compute embeddings for each venue.
-- Store everything in a vector database.
+User types something like:
+> “I want a crazy kafana in Belgrade with rakija, 3 friends, around 2am, budget up to 100€ for all of us.”
 
-### 2. Online: Find Your Night Twin
+Frontend sends:
 
-#### User Input
+``` text
+POST /prompt-search
+Content-Type: application/json
 
-- User selects:
-  - Home city + favorite venue  
-    **or**
-  - Describes their ideal place in natural language.
-- Optionally adds filters: “no tourists”, “cheap drinks”, “live music”, “smoking allowed”…
+{
+  "prompt": "I want a crazy kafana in Belgrade with rakija, 3 friends, around 2am, budget up to 100€..."
+}
+```
 
-#### Candidate Retrieval
+### 2. Prompt Parsing (LLM)
 
-- Backend fetches / embeds the favorite venue (or the text description).
-- Performs a **k-NN search** in the vector DB, restricted to the target city.
-- Returns top-N candidate venues.
+PromptParser calls gpt-4.1-mini with a strict JSON schema and gets something like:
 
-#### LLM Re-Ranking
+```jsonc
+{
+  "valid": true,
+  "city": "Belgrade",
+  "day_of_week": "Saturday",
+  "time": "02:00",
+  "group_size": 4,
+  "budget_level": 3,
+  "party_level": 5,
+  "tags": ["kafana", "rakija", "live music", "crowded"]
+}
+```
 
-An LLM receives:
+This is converted into a SearchRequest / SearchQueryParams.
 
-- User preferences.
-- Favorite venue description.
-- Candidate venues with tags & metadata.
+### 3. Guardrails: Is the Prompt Good?
 
-It reorders candidates and explains **why** each is a good “twin”.
+`NightTwinSearchEngine.search_with_prompt_guardrail():`
 
-#### Response to User
+Computes embeddings for the query using `text-embedding-3-small`.
 
-The frontend shows:
+Filters historical nights:
+same city,
+same weekend vs weekday type.
 
-- Top 3–5 doppelgängers with:
-  - Short *vibe description*
-  - Key tags (music, crowd, price, noise)
-  - Maps link.
+Computes semantic + structured similarity for candidate nights.
+
+Checks semantic similarity distribution:
+
+If max similarity < 0.6 → status = "no_match".
+
+If too many nights ≥ 0.8 similarity → status = "too_broad".
+
+Otherwise → status = "ok".
+
+If status != "ok", backend returns no venues, but a message explaining the issue.
+
+### 4. Doppelgänger Search & Ranking
+
+If prompt is good:
+
+1. We pick top-N most similar nights.
+
+2. Aggregate scores per venue.
+
+3. Rank venues by average score.
+
+For each top venue, we build explanations based on:
+
+matching city & area,
+
+party level alignment,
+
+overlapping vibe tags,
+
+typical opening hours vs requested time.
+
+### 5. Frontend Display
+
+Frontend receives:
+
+```jsonc
+{
+  "status": "ok",
+  "reason": "Query matched a reasonable number of nights.",
+  "parsed_query": {
+    "city": "Belgrade",
+    "day_of_week": "Saturday",
+    "time": "02:00",
+    "group_size": 4,
+    "budget_level": 3,
+    "party_level": 5,
+    "tags": ["kafana", "rakija", "live music", "crowded"]
+  },
+  "venues": [
+    {
+      "venue_id": 42,
+      "name": "Kafana NightTwin Example",
+      "city": "Belgrade",
+      "area": "Dorćol",
+      "venue_type": "kafana",
+      "score": 0.91,
+      "reasons": [
+        "This venue is in Dorćol, Belgrade, matching your city selection.",
+        "Average party level here is high, matching your request for a crazy night.",
+        "Guests often describe this place with similar vibe tags you requested: kafana, rakija, live music.",
+        "Typical opening hours from 22:00 to 04:00, which fits late-night outings."
+      ]
+    }
+  ]
+}
+```
+
+Frontend renders these as cards.
 
 ---
 
