@@ -85,14 +85,6 @@ frontend/
 
 ---
 
-## **🔑Features**
-
-- **Similarity Search🔍**: Finds the top-K most similar nights by comparing query embeddings with precomputed night embeddings.  
-- **Embeddings Generation🧠**: Uses **OpenAI embeddings** to represent nights as vectors.  
-- **Frontend Integration**: Users interact with a simple form to query the AI system.  
-- **Venue Info**: Returns venue details for each night.  
-- **Configurable**: API keys, username, and password stored securely in `.env`.
----
 
 ## **🚀Getting started**
 
