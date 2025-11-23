@@ -277,23 +277,24 @@ graph LR
 
     FE -->|free-text prompt| PS[/POST /prompt-search/]
 
-    subgraph Backend (FastAPI)
-      PS --> PP[PromptParser (GPT-4.1-mini)]
-      PP --> SQ[SearchQueryParams]
+    subgraph Backend_FastAPI [Backend (FastAPI)]
+        PS --> PP[PromptParser (GPT-4.1-mini)]
+        PP --> SQ[SearchQueryParams]
 
-      SQ --> SE[NightTwinSearchEngine]
-      SE -->|semantic similarity + structured features| NS[(Night Dataset)]
+        SQ --> SE[NightTwinSearchEngine]
+        SE -->|semantic + structured similarity| NS[(Night Dataset)]
 
-      NS --> SE
-      SE --> RES[Ranked Venues + Reasons]
+        NS --> SE
+        SE --> RES[Ranked Venues + Reasons]
     end
 
     RES --> FE
+::contentReference[oaicite:0]{index=0}
 ```
 
 ---
 
-## 🔥 How It Works (The Flow)
+## 🔥 How It Works (End-to-End Flow)
 
 ### 1. User Prompt
 
