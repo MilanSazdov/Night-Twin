@@ -1,16 +1,18 @@
-# 🌙 NightTwin: Find Your Nightlife Doppelgänger
+# 🌃 NightTwin: AI Doppelgängers for Your Night Out
 
 ![NightTwin Banner](./assets/banner.png)
+
 <div align="center">
 
-**Your favorite bar has a twin in every city.** NightTwin finds venues that *feel* like your go-to spot – same vibe, different location.
+**Describe your perfect night out in one sentence.  
+We’ll find its nightlife twin.**
 
-[![Hackathon](https://img.shields.io/badge/Reputeo%20x%20Yandex-AI%20Hackathon-blue)]()
-[![Stack](https://img.shields.io/badge/Stack-FastAPI%20%7C%20React%20%7C%20OpenAI-brightgreen)]()
-[![Search](https://img.shields.io/badge/Search-Embeddings%20%7C%20LLM%20Ranking-purple)]()
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+Turn messy reviews and past nights out into **AI-powered “doppelgänger” venues** that match your vibe, budget, city, and chaos level.
 
-[**🎥 WATCH THE DEMO**](#) · [**🚀 OPEN NIGHTTWIN**](#)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](./LICENSE)
+![Backend: FastAPI](https://img.shields.io/badge/Backend-FastAPI-blue)
+![AI Stack: OpenAI](https://img.shields.io/badge/AI-OpenAI%20API-purple)
+![Status: Hackathon Prototype](https://img.shields.io/badge/Status-Hackathon_Prototype-orange)
 
 </div>
 
@@ -20,15 +22,17 @@
 
 - [💥 The Problem](#-the-problem)
 - [💡 The Solution](#-the-solution)
-- [🧬 Where Is the “Doppelgänger”?](#-where-is-the-doppelgänger)
-- [📊 Dataset & Collection](#-dataset--collection)
-- [🧹 Preprocessing Pipeline](#-preprocessing-pipeline)
-- [🧠 Models & Why We Chose Them](#-models--why-we-chose-them)
+- [✨ Key Features](#-key-features)
+- [🧠 AI & Modeling](#-ai--modeling)
+  - [📊 Dataset & Preprocessing](#-dataset--preprocessing)
+  - [🧬 Model Experiments & Final Choice](#-model-experiments--final-choice)
+  - [🧬 Where Is the “Doppelgänger”?](#-where-is-the-doppelgänger)
 - [🏗 Architecture & Tech Stack](#-architecture--tech-stack)
-- [🔥 How It Works (The Flow)](#-how-it-works-the-flow)
+- [🔥 How It Works (End-to-End Flow)](#-how-it-works-end-to-end-flow)
 - [🛠 Getting Started](#-getting-started)
-- [🧪 Example Queries](#-example-queries)
-- [🚀 Future Work](#-future-work)
+  - [Backend (FastAPI)](#backend-fastapi)
+  - [Frontend (React)](#frontend-react)
+- [🚀 Example Prompts to Try](#-example-prompts-to-try)
 - [👥 Authors](#-authors)
 - [📄 License](#-license)
 
@@ -36,208 +40,258 @@
 
 ## 💥 The Problem
 
-Discovering nightlife in a **new city** is still mostly:
+Going out in a new city (or even your own) is still mostly trial-and-error:
 
-- Top-10 lists of **touristy places**.
-- Generic filters like *“4.5★, near city center, $$$”*.
-- Zero understanding of **your personal vibe**:  
-  *“chill jazz bar with dim lights”* vs *“sweaty techno bunker”* vs *“loud Balkan kafana with live music”*.
+- You ask friends, scroll TikTok, or read random reviews.
+- Reviews are **unstructured, noisy, and biased** (“nice place”, “good music”, “5 stars” – but you still don’t know if it fits *your* vibe).
+- Apps show ratings, photos, maybe “popular now” – but **not**:
+  - “Is this place similar to *that* legendary night we had last month?”
+  - “Is this bar a **doppelgänger** of that kafana where I drank rakija until 3am?”
 
-Existing platforms:
-- Optimize for **popularity**, not **personal similarity**.
-- Don’t transfer your taste: if you love one bar at home, there’s no way to say  
-  > “Show me the **same kind of place** in another city.”
+Existing platforms optimize for **average rating**, not for **your ideal night**.
 
 ---
 
 ## 💡 The Solution
 
-**NightTwin** is a vibe-based venue recommender.
+**NightTwin** is an AI system that finds **doppelgängers of your ideal night out**, not just “4.6-star bars”.
 
-Instead of searching *“bars in Belgrade”*, you say:
+You write a natural language prompt like:
 
-> “I love **[Your Favorite Place]** in **[Your City]** —  
-> find me its **nightlife doppelgänger** in **[Target City]**.”
+> “I want to drink rakija with 2 friends in Dorćol around 2am, loud Balkan music, budget up to 100€.”
 
-NightTwin then:
+NightTwin:
 
-- Understands the **vibe, crowd, mood, music, and use case** of your favorite venue.
-- Searches across thousands of venues in the target city.
-- Returns places that **feel like your original**, not just “also 4.6★”.
-
-**For users:** frictionless way to feel at home in a new city.  
-**For venues:** fair discovery based on *fit*, not just ads and raw rating.
-
----
-
-## 🧬 Where Is the “Doppelgänger”?
-
-We define a **nightlife doppelgänger** as:
-
-> > A venue in another city whose **semantic “vibe embedding”** is closest  
-> > to your favorite place, under constraints like price level, noise, and crowd.
-
-Concretely:
-
-1. Every venue is represented as a **high-dimensional vector** built from:
-   - Google Maps reviews (text)
-   - Ratings & volume of reviews
-   - LLM-extracted attributes (e.g. *“loud”, “romantic”, “groups”, “live music”*).
-2. When you pick a favorite place, we:
-   - Build / fetch its embedding.
-   - Find **nearest neighbors** in the target city using vector search.
-3. We then re-rank candidates with an LLM so the final list matches:
-   - **Vibe** (music, crowd, mood).
-   - **Context** (date night vs pre-drink vs afterparty).
-   - **Practical filters** (budget, location, smoking, etc).
-
-The “twin” is therefore not a clone of the menu or address —  
-it’s a clone of the **experience**.
+1. Uses an LLM to extract **structured intent** (city, time, budget level, party level, vibe tags).
+2. Embeds your request in a **semantic space** together with tens of thousands of past “nights out”.
+3. Finds historical **nights that are most similar to your request**.
+4. Aggregates them into venues whose past nights are the **closest doppelgängers to your desired night**.
+5. Returns top venues with human-readable explanations:  
+   > “We recommend this place because previous nights here had high party level, strong rakija + kafana vibes, and similar group size & budget.”
 
 ---
 
-## 📊 Dataset & Collection
+## ✨ Key Features
 
-We built our dataset around **Google Maps reviews**:
+### 1. 🧠 Prompt-to-Intent Extraction (LLM as a Parser)
 
-- We **scraped Google Maps** for nightlife venues (bars, clubs, lounges, pubs, kafanas…) in selected cities.
+- User can type **anything**: casual Serbian/English mix, vague description, even slang.
+- A GPT-based “Prompt Parser” converts this into:
+  - `city`
+  - `day_of_week`
+  - `time`
+  - `group_size` (1–10+)
+  - `budget_level` (1–5)
+  - `party_level` (1–5)
+  - `tags` (e.g. `["kafana", "rakija", "live music", "crowded"]`)
+- This turns **fuzzy text** into a structured query the engine can reason about.
+
+### 2. 🧬 Doppelgänger Search Engine (Semantic + Structured)
+
+- Each historical night is represented by:
+  - A **structured feature vector** (city, day, weekend flag, music type, vibe tags, normalized budget/party/crowd/etc.).
+  - A **semantic embedding** of its description.
+- For each user request we compute:
+  - Semantic similarity (cosine in embedding space).
+  - Structural match (dot product over normalized features).
+- Final score = **semantic similarity + λ × structural similarity**.
+
+This creates a **“night twin” similarity notion** – not just text similarity, but full behavioral/context match.
+
+### 3. 🚦 Prompt Quality Guardrails
+
+To avoid misleading results, we explicitly judge the **quality of the user’s prompt**:
+
+- If **best similarity < 60%** →  
+  `status = "no_match"` → we **don’t** show venues, but ask user to adjust the request.
+- If **too many nights are extremely similar** (prompt is too generic) →  
+  `status = "too_broad"` → we ask user to narrow down (e.g. specify city or vibe).
+- Only **“healthy” prompts** (`status = "ok"`) return venue recommendations.
+
+This gives the jury a clear **trust & safety story** for the AI component.
+
+### 4. 🧭 Transparent Explanations (“Why this place?”)
+
+For each recommended venue we generate bullet-point explanations based on data:
+
+- City & area match (e.g. **Dorćol, Belgrade**).
+- Typical party level vs requested party level.
+- Intersection between venue’s top vibe tags and user’s requested tags.
+- Typical hours vs requested time (“fits late-night outings”).
+
+You don’t just get “4.7★ bar” – you get **“nightlife twins” with reasons**.
+
+---
+
+## 🧠 AI & Modeling
+
+### 📊 Dataset & Preprocessing
+
+We designed the pipeline to make judges happy on:
+
+- dataset quality,
+- preprocessing,
+- explainability.
+
+**Data source (conceptual):**
+
+- We scraped **Google Maps reviews and metadata** for nightlife venues in Serbian cities  
+  (e.g. Belgrade, Novi Sad, Niš, Kragujevac, Subotica, Sombor, Zlatibor, Kraljevo) using a local Python script.
 - For each venue we collected:
-  - Name, address, category
-  - Overall rating + number of reviews
-  - Raw review texts (top-N recent & most relevant)
-- Using the **OpenAI API**, we converted unstructured reviews into **structured attributes** per venue:
-  - Primary & secondary **vibes** (e.g. *“cozy jazz”, “underground techno”, “student bar”*)
-  - Typical **crowd** (locals vs tourists, age range)
-  - **Use cases** (date night, pre-drink, groups, solo, etc.)
-  - **Noise level**, **dress code**, **price level**
-  - Safety / “sketchiness” hints if reviewers mentioned them.
+  - Name, location (city, area),
+  - Category (bar, club, kafana, lounge),
+  - Rating & review count,
+  - Free-text reviews.
 
-All of this was processed in a **local Python script**, then exported to a clean dataset consumed by our backend.
+> ⚠️ The scraping + raw data scripts are **kept local** and are **not in this repo**, to respect Terms of Service.  
+> This repository only contains **processed, aggregated data**.
 
----
+**From raw reviews to structured “nights out”:**
 
-## 🧹 Preprocessing Pipeline
+We used local preprocessing scripts:
 
-Our preprocessing focused on making noisy review data usable for retrieval:
+- `backend/data/serbia_nightlife_dataset.csv` – base events/visits per venue.
+- `backend/scripts/build_venues.py` – aggregates venue-level stats:
+  - average budget / party level,
+  - typical start/end time,
+  - top vibe tags.
+- `backend/scripts/preprocess_nights.py` – builds final training/serving dataset:
+  - normalizes and encodes:
+    - city, day_of_week, season,
+    - venue_type, music_type, vibe tags,
+    - group_size, budget_level, party_level, crowd_level, alcohol_level, etc.
+  - produces:
+    - `features_config.json` – vocabularies + numeric ranges.
+    - `nights_features.jsonl` – one row per “night out”, with:
+      ```jsonc
+      {
+        "night_id": ...,
+        "venue_id": ...,
+        "city": "...",
+        "day_of_week": "...",
+        "struct_features": [ ... floats ... ],
+        "text_for_embedding": "Night out at ...",
+        "embedding": [ ... floats ... ]
+      }
+      ```
 
-1. **Scraping & Normalization**
-   - Scrape venue metadata + reviews.
-   - Normalize city & country names, categories, and addresses.
-   - Deduplicate venues across small changes in names or typos.
+**Why this preprocessing matters:**
 
-2. **Review Cleaning**
-   - Remove:
-     - Very short reviews (e.g. “Nice 👍”).
-     - Non-informative texts (emoji-only, pure ratings).
-   - Basic text normalization: lowercasing, stripping HTML / markup.
+- **City / day / weekend** help us separate very different behavior patterns (e.g. Monday vs Saturday).
+- **Normalized numeric features** (0–1) allow us to combine structural and semantic similarity in a stable way.
+- **Vibe tags & music type** capture what users actually care about (kafana vs techno vs chill rooftop).
+- This makes our similarity metric not just “textual,” but **behavioral & contextual**.
 
-3. **Language & Quality Filtering**
-   - Detect review language and keep only languages we can reliably process.
-   - Filter out spammy reviews (e.g. repeated patterns, copied texts).
+### 🧬 Model Experiments & Final Choice
 
-4. **LLM-Based Structuring (OpenAI)**
-   - Batch reviews per venue into concise context.
-   - Use OpenAI models to extract:
-     - Categorical tags (vibe, music type, crowd).
-     - Continuous attributes (noise level, price band etc.).
-   - Store results as a structured JSON per venue.
+We tested multiple models from the **OpenAI API** for two distinct tasks:
 
-5. **Final Venue Object**
-   - Each venue becomes a `Venue` document with:
-     - Raw fields: name, rating, location.
-     - LLM-derived fields: vibe tags, crowd, use cases.
-     - Precomputed **embedding vector** for fast similarity search.
+#### 1. Prompt Parsing (LLM → Structured Query)
 
-This pipeline runs **offline**, so the online experience is fast and responsive.
-
----
-
-## 🧠 Models & Why We Chose Them
-
-We use OpenAI models in two main places:
-
-1. **Understanding & tagging venues (LLM)**
-2. **Building vector representations (embeddings)**
-
-### 1. LLMs for Structuring & Re-ranking
-
-We experimented with several OpenAI chat models for tagging venues from reviews:
+We tried:
 
 - `gpt-4.1-mini`
-- `gpt-4o`
-- `o3-mini` (for reasoning-heavy classification on a small subset)
+- `gpt-4.1`
 
-**Why we ended up with `gpt-4.1-mini` for tagging:**
+**Why these models:**
 
-- **Quality:** Captured nuanced concepts like *“good for pre-drink”* vs *“end-of-night place”* reliably.
-- **Latency:** Fast enough for batch processing hundreds of venues.
-- **Cost:** Much cheaper than full `gpt-4o` while keeping almost the same tagging quality for our task.
+- `gpt-4.1-mini`:
+  - Very fast and cheap → ideal for interactive, per-request parsing.
+  - Already good enough at extracting fields (city, time, budget, tags) with **JSON output**.
+- `gpt-4.1`:
+  - Higher quality, but slower and more expensive.
+  - We used it in early experiments to validate prompt design and edge cases.
 
-For **re-ranking candidates online**, we use a **lightweight LLM call**:
+**Final choice for hackathon:**  
+We use **`gpt-4.1-mini`** in production (`PromptParser`) because:
 
-- Input: user’s favorite venue description + candidate venues + user filters.
-- Output: sorted list with natural-language justification (“why this is your twin”).
-- Here we prioritize **quality over cost**, so we can optionally switch to a stronger model (e.g. `gpt-4o`) when needed.
+- It hits the sweet spot between **speed, cost, and accuracy** for structured extraction.
+- The JSON schema is small and fixed → errors are easy to catch and validate.
 
-### 2. Embedding Models for Similarity
+#### 2. Semantic Similarity (Embeddings for Nights & Queries)
 
-For semantic search, we evaluated:
+We experimented with:
 
 - `text-embedding-3-small`
-- `text-embedding-3-large`
+- `text-embedding-3-large` (and conceptually compared to older `text-embedding-ada-002`)
 
-We ended up using **`text-embedding-3-small`** as the default because:
+**Why `text-embedding-3-small`:**
 
-- It provides **excellent semantic clustering** for reviews & tags.
-- It is **significantly cheaper** per vector than the large model.
-- In our manual evaluation (checking top-k “twins” for a sample of venues), the difference vs `3-large` was not big enough to justify the cost at hackathon scale.
+- Extremely cheap: optimized for high-volume applications.
+- Embedding quality is more than sufficient for:
+  - short “night out” descriptions,
+  - ranking of similar nights.
+- With our preprocessing (features + tags), we **don’t need** the extra cost of `-large`.
 
-**Workflow:**
+**Final choice for hackathon:**  
+We use **`text-embedding-3-small`** for:
 
-- Build embeddings for:
-  - Venue descriptions (raw + LLM-compressed)
-  - LLM-generated tags and attributes
-- At query time:
-  - Embed the **favorite venue**.
-  - Search nearest neighbors in the target city.
-  - Feed candidates + user constraints to the LLM to get the final ranked list.
+- all historical nights (`preprocess_nights.py`), and
+- each incoming query (inside `NightTwinSearchEngine`).
+
+### 🧬 Where Is the “Doppelgänger”?
+
+The “doppelgänger” concept appears in two layers:
+
+1. **Night-level doppelgängers**  
+   - For each user query we find the **most similar historical nights**:
+     - same city and weekend/weekday type,
+     - similar time, budget, party level, vibes,
+     - high semantic similarity of descriptions.
+   - These are the **“night twins”** of your requested experience.
+
+2. **Venue-level doppelgängers**  
+   - We then aggregate top nights by venue and compute an average score per venue.
+   - A recommended venue is essentially:
+     > “The place where past nights look the most like the night you just described.”
+
+So NightTwin is literally a **“Find the night’s doppelgänger” engine**, not just a generic recommender.
 
 ---
 
 ## 🏗 Architecture & Tech Stack
 
-### Tech Stack
+### 🧰 Tech Stack
 
-- **Frontend:** React / Next.js, TypeScript, TailwindCSS
-- **Backend:** FastAPI (Python), Uvicorn
-- **AI & Search:**
-  - OpenAI Chat & Embeddings API
-  - Vector store (e.g. PostgreSQL + pgvector / Qdrant / Chroma)
-- **Data & Tooling:** Python, Pandas, local scraping & preprocessing scripts
-- **Infra:** Docker, (Vercel / Railway / similar) for deployment
+- **Backend:**
+  - Python 3
+  - FastAPI (REST API)
+  - Uvicorn (ASGI server)
+  - NumPy, Pandas (data & vector operations)
+  - OpenAI Python SDK (LLM + embeddings)
 
-### System Architecture
+- **Frontend:**
+  - React (or Next.js) + TypeScript
+  - Vite or Next dev server
+  - TailwindCSS for quick styling
+
+- **Infra (Hackathon):**
+  - Yandex Cloud Compute (for hosting backend + preprocessing)
+  - (Optionally) Yandex Object Storage / Managed DB for persistence
+
+### 🧱 System Architecture
 
 ```mermaid
 graph LR
-    User((User)) --> UI[Web App (NightTwin Frontend)]
-    UI --> API[FastAPI Backend]
+    U[User] --> FE[Frontend Web App]
 
-    subgraph "Offline Pipeline"
-        Scrape[Google Maps Scraper] --> Clean[Cleaning & Normalization]
-        Clean --> LLMTag[OpenAI LLM Tagger]
-        LLMTag --> Embed[Embedding Builder]
-        Embed --> VecDB[(Vector DB)]
+    FE -->|free-text prompt| PS[/POST /prompt-search/]
+
+    subgraph Backend (FastAPI)
+      PS --> PP[PromptParser (GPT-4.1-mini)]
+      PP --> SQ[SearchQueryParams]
+
+      SQ --> SE[NightTwinSearchEngine]
+      SE -->|semantic similarity + structured features| NS[(Night Dataset)]
+
+      NS --> SE
+      SE --> RES[Ranked Venues + Reasons]
     end
 
-    API --> VecDB
-    API --> OpenAI[OpenAI API]
-
-    VecDB --> API
-    OpenAI --> API
-
-    API --> UI
+    RES --> FE
 ```
+
+---
 
 ## 🔥 How It Works (The Flow)
 
