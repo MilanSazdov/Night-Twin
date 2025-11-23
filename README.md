@@ -136,7 +136,7 @@ We designed the pipeline to make judges happy on:
 **Data source (conceptual):**
 
 - We scraped **Google Maps reviews and metadata** for nightlife venues in Serbian cities  
-  (e.g. Belgrade, Novi Sad, Niš, Kragujevac, Subotica, Sombor, Zlatibor, Kraljevo) using a local Python script.
+  (e.g. Belgrade, Novi Sad, Niš, Kragujevac, Subotica, Sombor, Zlatibor, Kraljevo).
 - For each venue we collected:
   - Name, location (city, area),
   - Category (bar, club, kafana, lounge),
