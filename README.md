@@ -269,27 +269,29 @@ So NightTwin is literally a **“Find the night’s doppelgänger” engine**, n
   - Yandex Cloud Compute (for hosting backend + preprocessing)
   - (Optionally) Yandex Object Storage / Managed DB for persistence
 
+---
+
 ### 🧱 System Architecture
 
 ```mermaid
 graph LR
-    U[User] --> FE[Frontend Web App]
+    U[User] --> FE["Frontend Web App"]
+    FE -->|free-text prompt| PS["POST /prompt-search"]
 
-    FE -->|free-text prompt| PS[/POST /prompt-search/]
+    subgraph Backend_FastAPI
+        PP["PromptParser (GPT-4.1-mini)"]
+        SE[NightTwinSearchEngine]
+        NS[(Night Dataset)]
+        RES["Ranked Venues + Reasons"]
 
-    subgraph Backend_FastAPI [Backend (FastAPI)]
-        PS --> PP[PromptParser (GPT-4.1-mini)]
-        PP --> SQ[SearchQueryParams]
-
-        SQ --> SE[NightTwinSearchEngine]
-        SE -->|semantic + structured similarity| NS[(Night Dataset)]
-
+        PS --> PP
+        PP --> SE
+        SE --> NS
         NS --> SE
-        SE --> RES[Ranked Venues + Reasons]
+        SE --> RES
     end
 
     RES --> FE
-::contentReference[oaicite:0]{index=0}
 ```
 
 ---
