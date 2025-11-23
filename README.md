@@ -332,45 +332,37 @@ This is converted into a SearchRequest / SearchQueryParams.
 
 ### 3. Guardrails: Is the Prompt Good?
 
-`NightTwinSearchEngine.search_with_prompt_guardrail():`
+`NightTwinSearchEngine.search_with_prompt_guardrail()`:
 
-Computes embeddings for the query using `text-embedding-3-small`.
+- Computes embeddings for the query using `text-embedding-3-small`.
+- Filters historical nights by:
+  - same **city**,
+  - same **weekend vs weekday** type.
+- Computes **semantic + structured similarity** for all candidate nights.
+- Analyzes the semantic similarity distribution:
+  - If **max similarity < 0.6** → `status = "no_match"`.
+  - If **too many nights ≥ 0.8 similarity** → `status = "too_broad"`.
+  - Otherwise → `status = "ok"`.
 
-Filters historical nights:
-same city,
-same weekend vs weekday type.
+If `status != "ok"`, the backend returns **no venues**, but a human-readable message explaining the issue.
 
-Computes semantic + structured similarity for candidate nights.
-
-Checks semantic similarity distribution:
-
-If max similarity < 0.6 → status = "no_match".
-
-If too many nights ≥ 0.8 similarity → status = "too_broad".
-
-Otherwise → status = "ok".
-
-If status != "ok", backend returns no venues, but a message explaining the issue.
+---
 
 ### 4. Doppelgänger Search & Ranking
 
-If prompt is good:
+If the prompt is good (`status = "ok"`):
 
-1. We pick top-N most similar nights.
+1. We pick **top-N most similar nights**.
+2. Aggregate similarity scores per venue.
+3. Rank venues by their **average score**.
 
-2. Aggregate scores per venue.
+For each top venue, we also generate explanations based on:
 
-3. Rank venues by average score.
+- matching **city & area**,
+- **party level** alignment,
+- overlapping **vibe tags**,
+- typical **opening hours** vs requested time.
 
-For each top venue, we build explanations based on:
-
-matching city & area,
-
-party level alignment,
-
-overlapping vibe tags,
-
-typical opening hours vs requested time.
 
 ### 5. Frontend Display
 
