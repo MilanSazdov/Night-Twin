@@ -1,0 +1,81 @@
+:root {
+  --bg: #060612; /* deep, near-black navy */
+  --bg-2: #0b0f1a;
+  --card-bg: rgba(255,255,255,0.03);
+  --panel: rgba(255,255,255,0.04);
+  --text: #e6eef8;
+  --muted: #9aa6c3;
+  --accent: #ff2d95; /* neon pink */
+  --accent-2: #7c3aed; /* purple */
+  --accent-cyan: #00e5ff;
+  --glass: rgba(255,255,255,0.03);
+  --button-bg: #0f1220;
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--text);
+  background-color: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 600;
+  color: var(--accent-2);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 100vh;
+  background: radial-gradient(1200px 400px at 10% 10%, rgba(124,58,237,0.08), transparent 10%), radial-gradient(800px 300px at 90% 80%, rgba(255,45,149,0.06), transparent 12%), var(--bg);
+}
+
+/* Disable page scroll so layout is fixed to viewport */
+html, body, #root { height: 100%; overflow: hidden; }
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.04);
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 600;
+  font-family: inherit;
+  background-color: var(--button-bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: box-shadow 160ms, transform 140ms, border-color 160ms;
+}
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 30px rgba(124,58,237,0.06), 0 2px 8px rgba(255,45,149,0.04);
+}
+button:focus,
+button:focus-visible {
+  outline: 3px solid rgba(124,58,237,0.18);
+  outline-offset: 2px;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color-scheme: light;
+  }
+}
