@@ -35,6 +35,10 @@ __pycache__/
 *.pyo
 *.pyd
 
+# Local generated data artifacts (datasets, features, embeddings)
+backend/data/
+backend/data/**
+
 # virtual envs
 venv/
 .venv/
