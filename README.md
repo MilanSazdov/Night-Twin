@@ -371,7 +371,7 @@ Some directions we’d like to explore:
 
 ## 👥 Authors
 
-Team **NightTwin**:
+Team **Lucky 3**:
 
 - **Milan Sazdov** – [LinkedIn](https://www.linkedin.com/in/milansazdov)
 - **Lazar Sazdov** – [LinkedIn](https://www.linkedin.com/in/lazarsazdov)
